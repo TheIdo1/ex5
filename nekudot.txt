@@ -1,0 +1,65 @@
+תיקונים:
+להוסיף if case אחרי כל malloc / realloc
+להוסיף if case למקרה שמוחקים את הפלייליסט האחרון / מוסיפים אחריו עוד אחד
+
+typedef struct Song {
+    char *title;
+    char *artist;
+    int year;
+    char *lyrics;
+    int streams;
+} Song;
+
+typedef struct Playlist {
+    char *name;
+    Song **songs;
+    int songsNum;
+} Playlist;
+
+
+//copy index1 to temp
+temp.name = malloc((strlen(allPlaylists[index1].name) * sizeof(char)) + 1);
+    if(!temp.name) {
+        exit(1);
+    }
+    strcpy(temp.name, allPlaylists[index1].name);
+    temp.songs = malloc(allPlaylists[index1].songsNum * (sizeof(Song *)));
+    if(!temp.songs) {
+        exit(1);
+    }
+    temp.songsNum = allPlaylists[index1].songsNum;
+    for (int i = 0; i < temp.songsNum; i++) {
+        temp.songs[i] = allPlaylists[index1].songs[i];
+    }
+	
+	    //copy index2 to index1
+    allPlaylists[index1].name = realloc(allPlaylists[index1].name, strlen(allPlaylists[index2].name) + 1);
+    if(!allPlaylists[index1].name) {
+        exit(1);
+    }
+    strcpy(allPlaylists[index1].name, allPlaylists[index2].name);
+    allPlaylists[index1].songs = realloc(allPlaylists[index1].songs, allPlaylists[index2].songsNum * sizeof(Song *));
+    if(!allPlaylists[index1].songs) {
+        exit(1);
+    }
+    for (int i = 0; i < allPlaylists[index2].songsNum; i++) {
+        allPlaylists[index1].songs[i] = allPlaylists[index2].songs[i];
+    }
+    allPlaylists[index1].songsNum = allPlaylists[index2].songsNum;
+    //copy temp to index2
+    allPlaylists[index2].name = realloc(allPlaylists[index2].name, strlen(temp.name) + 1);
+    if(!allPlaylists[index2].name) {
+        exit(1);
+    }
+    strcpy(allPlaylists[index2].name, temp.name);
+    allPlaylists[index2].songs = realloc(allPlaylists[index2].songs, temp.songsNum * sizeof(Song *));
+    if(!allPlaylists[index2].songs) {
+        exit(1);
+    }
+    for (int i = 0; i < temp.songsNum; i++) {
+        allPlaylists[index2].songs[i] = temp.songs[i];
+    }
+    allPlaylists[index2].songsNum = temp.songsNum;
+    //free temp
+    free(temp.name);
+    free(temp.songs);
